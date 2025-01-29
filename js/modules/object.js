@@ -1,4 +1,4 @@
-/* Copyright (C) 2024 EVARISK <technique@evarisk.com>
+/* Copyright (C) 2024-2025 EVARISK <technique@evarisk.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,8 @@ window.digiquali.object = {};
  */
 window.digiquali.object.init = function() {
   window.digiquali.object.event();
+
+  window.digiquali.object.placePercents();
 };
 
 /**
@@ -65,6 +67,7 @@ window.digiquali.object.event = function() {
   $(document).on( 'keyup', '.question-comment', window.digiquali.object.showCommentUnsaved);
   $(document).on( 'change', '.question-answer', window.digiquali.object.changeStatusQuestion);
   $(document).on( 'click', '.answer:not(.disable)', window.digiquali.object.changeStatusQuestion);
+  $(document).on('input', '.question-answer[type="range"]', window.digiquali.object.rangePercent);
 };
 
 /**
@@ -210,3 +213,57 @@ window.digiquali.object.saveAnswer = function(questionId, answer, comment) {
     error: function() {}
   });
 };
+
+/**
+ * Range purcent
+ *
+ * @since   1.11.0
+ * @version 1.11.0
+ *
+ * @return {void}
+ */
+window.digiquali.object.rangePercent = function() {
+  const mobile      = window.saturne.toolbox.isPhone();
+  const slider      = $(this);
+  const value       = parseInt(slider.val());
+  const min         = parseInt(slider.attr('min'));
+  const max         = parseInt(slider.attr('max'));
+  const sliderWidth = slider.width();
+  const sliderPos   = slider.position().left;
+  const sliderTop   = slider.position().top;
+  var thumbWidth    = mobile ? 36 : 70;
+
+  $(this).parent().find('.range-percent').remove();
+
+  const rangePercent = $('<span class="range-percent">' + $(this).val() + '%</span>');
+  if (!mobile) {
+    rangePercent.css('transform', 'translateX(0)');
+  }
+
+  rangePercent.addClass('badge badge-primary');
+
+  rangePercent.css('top', (sliderTop - (thumbWidth * 1.05) / 2 - (mobile ? 10 : 5)) + 'px');
+
+  var pos = (value - min) / (max - min);
+
+  // how to get the thumb width
+  var thumbCorrect = -thumbWidth * (pos - 0.5);
+  var titlePos = sliderPos + Math.round((pos * sliderWidth) - (mobile ? 0 : thumbWidth / 4) + thumbCorrect);
+
+  rangePercent.css('left', titlePos);
+
+  $(this).parent().append(rangePercent);
+}
+
+/**
+ * Place the object in the right place
+ *
+ * @since   1.11.0
+ * @version 1.11.0
+ *
+ */
+window.digiquali.object.placePercents = function() {
+  $('.question-answer[type="range"]').each(function() {
+    window.digiquali.object.rangePercent.call(this);
+  });
+}

@@ -44,6 +44,7 @@
       .question-description {
         font-size: 14px;
         color: #777777;
+        margin-bottom: 1.5em;
       }
       .question__header-medias {
         display: flex;
@@ -75,6 +76,11 @@
         align-items: center;
         flex-direction: row;
 
+        .range-percent {
+          position: absolute;
+          transform: translateX(-50%);
+        }
+
         .range-image {
           padding: 0 0.5em 0 0.5em;
           font-size: 2em !important;
@@ -88,6 +94,7 @@
           outline: none;
           margin: 0;
           box-shadow: none;
+          position: relative;
         }
 
         input[type=range]::-webkit-slider-thumb {
@@ -100,6 +107,13 @@
           background: #0d8aff;
           transition: transform 0.1s ease-in-out;
           border-radius: 50%;
+
+          @media ( max-width: $media__small ) {
+            width: 30px;
+            height: 30px;
+            margin-top: -7px;
+            border: 6px solid #fff;
+          }
 
           &:hover {
             transform: scale(1.05);
